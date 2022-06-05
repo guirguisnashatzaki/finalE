@@ -17,7 +17,7 @@ namespace finalproject.Data
         {
         }
 
-        public virtual DbSet<Country> Countries { get; set; } = null!;
+        public virtual DbSet<Countries> Countries { get; set; } = null!;
         public virtual DbSet<Pop> Pops { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -25,14 +25,14 @@ namespace finalproject.Data
             modelBuilder.UseCollation("utf8mb4_0900_ai_ci")
                 .HasCharSet("utf8mb4");
 
-            modelBuilder.Entity<Country>(entity =>
+            modelBuilder.Entity<Countries>(entity =>
             {
-                entity.HasKey(e => e.Country1)
+                entity.HasKey(e => e.country)
                     .HasName("PRIMARY");
 
                 entity.ToTable("countries");
 
-                entity.Property(e => e.Country1)
+                entity.Property(e => e.country)
                     .HasMaxLength(50)
                     .HasColumnName("country");
 
@@ -47,25 +47,22 @@ namespace finalproject.Data
 
             modelBuilder.Entity<Pop>(entity =>
             {
-                entity.HasKey(e => e.Year)
-                    .HasName("PRIMARY");
-
                 entity.ToTable("pop");
 
                 entity.HasIndex(e => e.Country, "country");
 
-                entity.Property(e => e.Year)
-                    .ValueGeneratedNever()
-                    .HasColumnName("year");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
                 entity.Property(e => e.Country)
                     .HasMaxLength(50)
                     .HasColumnName("country");
 
-                entity.Property(e => e.Value).HasColumnName("value");
+                entity.Property(e => e.value).HasColumnName("value");
+
+                entity.Property(e => e.year).HasColumnName("year");
 
                 entity.HasOne(d => d.CountryNavigation)
-                    .WithMany(p => p.Pops)
+                    .WithMany(p => p.populationCounts)
                     .HasForeignKey(d => d.Country)
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("pop_ibfk_1");

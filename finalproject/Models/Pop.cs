@@ -5,10 +5,11 @@ namespace finalproject.Models
 {
     public partial class Pop
     {
-        public int Year { get; set; }
-        public long Value { get; set; }
+        public int year { get; set; }
+        public long value { get; set; }
         public string Country { get; set; } = null!;
+        public int Id { get; set; }
 
-        public virtual Country CountryNavigation { get; set; } = null!;
+        public virtual Countries CountryNavigation { get; set; } = null!;
     }
 }
