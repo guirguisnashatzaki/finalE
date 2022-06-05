@@ -90,53 +90,6 @@ namespace finalproject.Controllers
 
             return NoContent();
         }
-        private bool CountryExists(string id)
-        {
-            return (_context.Countries?.Any(e => e.country == id)).GetValueOrDefault();
-        }
-
-        [HttpGet]
-        public async Task<ICollection<Countries>> get()
-        {
-            HttpClient client = new HttpClient();
-            //Countries product = new Countries();
-            HttpResponseMessage response = await client.GetAsync("https://countriesnow.space/api/v0.1/countries/population");
-            string res = "";
-
-
-            res = await response.Content.ReadAsStringAsync();
-
-
-            var _dataResponse = JsonConvert.DeserializeObject<test>(res);
-
-
-            /*foreach(Countries c in _dataResponse.data)
-            {
-                if (_context.Countries == null)
-                {
-                    return Problem("Entity set 'finalprojectContext.Countries'  is null.");
-                }
-                _context.Countries.Add(c);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException)
-                {
-                    if (CountryExists(c.Country))
-                    {
-                        return BadRequest("Country Exists");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }*/
-
-
-            return _dataResponse.data;
-        }
 
         [HttpGet("pagination")]
         public async Task<ActionResult<IEnumerable<Countries>>> GetPops([FromQuery] PaginationParams @params)
