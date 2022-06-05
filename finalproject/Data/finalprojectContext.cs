@@ -27,18 +27,17 @@ namespace finalproject.Data
 
             modelBuilder.Entity<Countries>(entity =>
             {
-                entity.HasKey(e => e.country)
-                    .HasName("PRIMARY");
-
                 entity.ToTable("countries");
 
-                entity.Property(e => e.country)
-                    .HasMaxLength(50)
-                    .HasColumnName("country");
+                entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Code)
+                entity.Property(e => e.code)
                     .HasMaxLength(10)
                     .HasColumnName("code");
+
+                entity.Property(e => e.country)
+                    .HasMaxLength(200)
+                    .HasColumnName("country");
 
                 entity.Property(e => e.Iso3)
                     .HasMaxLength(10)
@@ -47,25 +46,23 @@ namespace finalproject.Data
 
             modelBuilder.Entity<Pop>(entity =>
             {
-                entity.ToTable("pop");
+                entity.ToTable("pops");
 
-                entity.HasIndex(e => e.Country, "country");
+                entity.HasIndex(e => e.Countryid, "countryid");
 
                 entity.Property(e => e.Id).ValueGeneratedNever();
 
-                entity.Property(e => e.Country)
-                    .HasMaxLength(50)
-                    .HasColumnName("country");
+                entity.Property(e => e.Countryid).HasColumnName("countryid");
 
                 entity.Property(e => e.value).HasColumnName("value");
 
                 entity.Property(e => e.year).HasColumnName("year");
 
-                entity.HasOne(d => d.CountryNavigation)
+                entity.HasOne(d => d.Country)
                     .WithMany(p => p.populationCounts)
-                    .HasForeignKey(d => d.Country)
+                    .HasForeignKey(d => d.Countryid)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("pop_ibfk_1");
+                    .HasConstraintName("pops_ibfk_1");
             });
 
             OnModelCreatingPartial(modelBuilder);

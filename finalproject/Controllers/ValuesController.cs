@@ -65,15 +65,21 @@ namespace finalproject.Controllers
             }*/
 
             int o = 0;
+            int p = 0;
             for (int i = 0; i < _dataResponse.data.ToArray().Length; i++)
             {
                 Countries c = _dataResponse.data.ToArray()[i];
+                c.Id = i + 1;
+                //c.code = _dataResponse.data.ToArray()[i].code;
+                //c.country = _dataResponse.data.ToArray()[i].country;
+               // c.Iso3 = _dataResponse.data.ToArray()[i].Iso3;
 
                 for (int j = 0; j < c.populationCounts.ToArray().Length; j++)
                 {
-                    c.populationCounts.ToArray()[j].Id = o;
+                    c.populationCounts.ToArray()[j].Id = o + 1;
                     o++;
                 }
+                p++;
                 _context.Countries.Add(c);
                 await _context.SaveChangesAsync();
             }
@@ -90,7 +96,7 @@ namespace finalproject.Controllers
         }
 
         [HttpGet]
-        public async Task<Countries> get()
+        public async Task<ICollection<Countries>> get()
         {
             HttpClient client = new HttpClient();
             //Countries product = new Countries();
@@ -129,62 +135,28 @@ namespace finalproject.Controllers
             }*/
 
 
-            return _dataResponse.data.First();
+            return _dataResponse.data;
         }
-
-        [HttpGet("fifty")]
-        public async Task<Countries> getfifty(int? pageNumber)
-        {
-            HttpClient client = new HttpClient();
-            //Countries product = new Countries();
-            HttpResponseMessage response = await client.GetAsync("https://countriesnow.space/api/v0.1/countries/population");
-            string res = "";
-
-
-            res = await response.Content.ReadAsStringAsync();
-
-
-            var _dataResponse = JsonConvert.DeserializeObject<test>(res);
-
-
-            /*foreach(Countries c in _dataResponse.data)
-            {
-                if (_context.Countries == null)
-                {
-                    return Problem("Entity set 'finalprojectContext.Countries'  is null.");
-                }
-                _context.Countries.Add(c);
-                try
-                {
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateException)
-                {
-                    if (CountryExists(c.Country))
-                    {
-                        return BadRequest("Country Exists");
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-            }*/
-
-
-            return _dataResponse.data.First();
-        }
-
-
 
         [HttpGet("pagination")]
-        public async Task<ActionResult<IEnumerable<Countries>>> GetPops(int id, [FromQuery] PaginationParams @params)
+        public async Task<ActionResult<IEnumerable<Countries>>> GetPops([FromQuery] PaginationParams @params)
         {
             if (_context.Countries == null)
             {
                 return NotFound();
             }
-            return await _context.Countries.Skip((@params.Page-1)*@params.ItemsPerPage).Take(@params.ItemsPerPage).ToListAsync();
+            return await _context.Countries.Skip((@params.Page - 1) * @params.ItemsPerPage).Take(@params.ItemsPerPage).ToListAsync();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<List<Pop>>> Getspecificcountries(int id)
+        {
+            if (_context.Pops == null)
+            {
+                return NotFound();
+            }
+            return await _context.Pops.Where(p=>p.Countryid==id).ToListAsync();
+               
         }
 
     }
